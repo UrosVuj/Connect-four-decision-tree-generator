@@ -8,25 +8,41 @@ using namespace std;
 class Tree {
 
 	struct node {
-		int arr[5] { -2,-2,-2,-2,-2 };   //array that holds minimax values for its children
-		int who_plays;                     
+
+		//array that holds minimax values for its children
+		int arr[5]{ -2,-2,-2,-2,-2 };
+		
+		int who_plays;
 		int result;
 		int table[5][5];
 		node* father;
 		node** children;
 
-		node(int arr[5][5], node* _father = nullptr) :father(_father)				//node constructor
+		/*
+		Node Constructor
+
+		*****
+
+		rand() determines who plays first if there is no father
+		else it just switches the player
+
+		if a node has a father, then it inherits
+		its fathers table, if not, that means that
+		node is the root node
+		*/
+
+		node(int arr[5][5], node* _father = nullptr) :father(_father)
 		{
-			if (father == nullptr) who_plays = rand() % 2 + 1;						//rand() determines who plays first if there is no father
-			else who_plays = (father->who_plays) % 2 + 1;							//else it just switches the player
+			if (father == nullptr) who_plays = rand() % 2 + 1;
+			else who_plays = (father->who_plays) % 2 + 1;
 			children = nullptr;
-			if (father != nullptr) {									
-				for (int i = 0; i < 5; i++) {										//if a node has a father, then it inherits
-					for (int j = 0; j < 5; j++)table[i][j] = father->table[i][j];   //its fathers table, if not, that means that
-				}																	//node is the root node
+			if (father != nullptr) {
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < 5; j++)table[i][j] = father->table[i][j];
+				}
 			}
 			else for (int i = 0; i < 5; i++)
-				for (int j = 0; j < 5; j++)table[i][j] = arr[i][j];      
+				for (int j = 0; j < 5; j++)table[i][j] = arr[i][j];
 		}
 
 	};
@@ -37,7 +53,9 @@ class Tree {
 			Elem* next;
 			Elem(node* neww = nullptr, Elem* nextt = nullptr) : _node(neww), next(nextt) {}
 		};
+
 		Elem* top = nullptr;
+
 		void push(node* curr) {
 			if (top == nullptr) {
 				top = new Elem(curr);
@@ -46,10 +64,7 @@ class Tree {
 				Elem* temp = new Elem(curr);
 				temp->next = top;
 				top = temp;
-
 			}
-
-
 		}
 
 		node* pop() {
@@ -61,19 +76,16 @@ class Tree {
 				delete temp;
 				return res;
 			}
-
 		}
 
 		bool stack_empty() {
 			if (top == nullptr) return true;
 			else return false;
-
 		}
-
 
 	};
 
-
+	node* root;
 
 	int root_depth(node* unknown) {
 		int res = 0;
@@ -101,7 +113,7 @@ class Tree {
 		}
 		return true;
 	}
-	
+
 	//returns 1 if there is a winner
 	int is_done(node* x) {
 
@@ -109,7 +121,9 @@ class Tree {
 		if (x->father == nullptr) return false;
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 5; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i + 1][j] == x->table[i + 2][j] && x->father->who_plays == x->table[i + 2][j]) return true;
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i + 1][j] == x->table[i + 2][j]
+					&& x->father->who_plays == x->table[i + 2][j]) return true;
 			}
 		}
 
@@ -117,7 +131,9 @@ class Tree {
 
 		for (int j = 0; j < 3; j++) {
 			for (int i = 0; i < 5; i++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i][j + 1] == x->table[i][j + 2] && x->father->who_plays == x->table[i][j + 2]) return true;
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i][j + 1] == x->table[i][j + 2]
+					&& x->father->who_plays == x->table[i][j + 2]) return true;
 			}
 		}
 
@@ -125,7 +141,9 @@ class Tree {
 
 		for (int i = 2; i < 5; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i - 1][j + 1] == x->father->who_plays && x->table[i - 2][j + 2] == x->father->who_plays)
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i - 1][j + 1] == x->father->who_plays
+					&& x->table[i - 2][j + 2] == x->father->who_plays)
 					return true;
 			}
 		}
@@ -134,7 +152,9 @@ class Tree {
 
 		for (int i = 2; i < 5; i++) {
 			for (int j = 2; j < 5; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i - 1][j - 1] == x->father->who_plays && x->table[i - 2][j - 2] == x->father->who_plays)
+				if (x->table[i][j] == x->father->who_plays &&
+					x->table[i - 1][j - 1] == x->father->who_plays &&
+					x->table[i - 2][j - 2] == x->father->who_plays)
 					return true;
 			}
 		}
@@ -150,7 +170,9 @@ class Tree {
 		if (x->father == nullptr) return false;
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 5; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i + 1][j] == x->table[i + 2][j] && x->father->who_plays == x->table[i + 2][j]) {
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i + 1][j] == x->table[i + 2][j]
+					&& x->father->who_plays == x->table[i + 2][j]) {
 
 					if (x->father->who_plays == root->who_plays) return 1;
 					else return -1;
@@ -162,18 +184,22 @@ class Tree {
 
 		for (int j = 0; j < 3; j++) {
 			for (int i = 0; i < 5; i++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i][j + 1] == x->table[i][j + 2] && x->father->who_plays == x->table[i][j + 2]) {
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i][j + 1] == x->table[i][j + 2]
+					&& x->father->who_plays == x->table[i][j + 2]) {
 					if (x->father->who_plays == root->who_plays) return 1;
 					else return -1;
 				};
 			}
 		}
 
-		// dijagonal #1
+		// diagonal #1
 
 		for (int i = 2; i < 5; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i - 1][j + 1] == x->father->who_plays && x->table[i - 2][j + 2] == x->father->who_plays)
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i - 1][j + 1] == x->father->who_plays
+					&& x->table[i - 2][j + 2] == x->father->who_plays)
 				{
 					if (x->father->who_plays == root->who_plays) return 1;
 					else return -1;
@@ -181,11 +207,13 @@ class Tree {
 			}
 		}
 
-		// dijagonala #2
+		// diagonal #2
 
 		for (int i = 2; i < 5; i++) {
 			for (int j = 2; j < 5; j++) {
-				if (x->table[i][j] == x->father->who_plays && x->table[i - 1][j - 1] == x->father->who_plays && x->table[i - 2][j - 2] == x->father->who_plays)
+				if (x->table[i][j] == x->father->who_plays
+					&& x->table[i - 1][j - 1] == x->father->who_plays
+					&& x->table[i - 2][j - 2] == x->father->who_plays)
 				{
 					if (x->father->who_plays == root->who_plays) return 1;
 					else return -1;
@@ -193,11 +221,11 @@ class Tree {
 			}
 		}
 
-	}         
-	
+	}
+
 
 	//checks if a column is full
-	bool is_col_full(node* x, int j) {               
+	bool is_col_full(node* x, int j) {
 		for (int i = 0; i < 5; i++) {
 			if (x->table[i][j] == 0) return false;
 		}
@@ -226,7 +254,7 @@ class Tree {
 
 	int index_of_first(node* x) {
 		int i = 0;
-		while (x->children[i] == nullptr) i++;            
+		while (x->children[i] == nullptr) i++;
 		return i;
 	}
 
@@ -235,18 +263,18 @@ class Tree {
 		while (x->father->children[i] != x)i++;
 		return i;
 	}
-	
+
 	//returns either the min value of the result
 	//or the max value depending on who is playing
 	int find_minimax(node* x) {
-		if (x->who_plays == root->who_plays) {    
+		if (x->who_plays == root->who_plays) {
 			int max = -1;
 			for (int i = 0; i < 5; i++) {
 				if (x->arr[i] > max && x->arr[i] != -2)max = x->arr[i];
 			}
 			return max;
 		}
-		else if (x->who_plays != root->who_plays) {   
+		else if (x->who_plays != root->who_plays) {
 			int min = 1;
 			for (int i = 0; i < 5; i++) {
 				if (x->arr[i] < min && x->arr[i] != -2)min = x->arr[i];
@@ -254,10 +282,8 @@ class Tree {
 			return min;
 		}
 	}
-	
 
 
-	node* root;
 
 public:
 	Tree(int arr[5][5]) {
@@ -281,9 +307,9 @@ public:
 						{
 							if (next->children == nullptr || next->children[i] == nullptr) {
 								if (next->children == nullptr) {
-									next->children = new node*[5]; for (int i = 0; i < 5; i++) next->children[i] = nullptr;
+									next->children = new node * [5]; for (int i = 0; i < 5; i++) next->children[i] = nullptr;
 								}
-																				
+
 								next->children[i] = new node(next->table, next);
 								add_new(next->children[i], i);
 
@@ -292,9 +318,9 @@ public:
 								//a winner exists? 1 if the one who played first won
 								//                -1 if the second player won
 								if (is_full(next->children[i]->table)) next->children[i]->result = 0;
-								if (is_done(next->children[i])) next->children[i]->result = is_done_res(next->children[i]);   
+								if (is_done(next->children[i])) next->children[i]->result = is_done_res(next->children[i]);
 							}
-						}					
+						}
 					}
 				}
 
@@ -302,7 +328,7 @@ public:
 					for (int i = 4; i > index_of_first(next); i--) {
 						if (next->children[i] != nullptr) stack.push(next->children[i]);
 					}
-				if (next->children != nullptr)next = next->children[index_of_first(next)]; 
+				if (next->children != nullptr)next = next->children[index_of_first(next)];
 				else next = nullptr;
 
 			}
@@ -313,7 +339,7 @@ public:
 
 
 	//prints the whole tree
-	void print_everything() { 
+	void print_everything() {
 		Stack stack;
 		node* next;
 		stack.push(root);
@@ -335,7 +361,7 @@ public:
 		}
 
 	}
-	
+
 
 	//function that uses propagation to determine
 	//the results of the whole tree
@@ -349,9 +375,9 @@ public:
 			while (next != 0) {
 
 				if (next->children == nullptr && next->father != nullptr && next->father != root) {
-					node* temp=next;
+					node* temp = next;
 					int id = identify_son(next);
-					while (temp->father != nullptr&& temp->father!=root) {
+					while (temp->father != nullptr && temp->father != root) {
 						id = identify_son(temp);
 						temp->father->arr[id] = temp->result;
 						temp->father->result = find_minimax(temp->father);
@@ -392,7 +418,7 @@ int main() {
 		cin >> n;
 		switch (n) {
 		case 1: {
-			cout << endl<<endl<<"Please put in the values of the matrix:"<<endl;
+			cout << endl << endl << "Please put in the values of the matrix:" << endl;
 			for (int i = 0; i < 5; i++)
 				for (int j = 0; j < 5; j++)
 					cin >> arr[i][j];
@@ -408,7 +434,6 @@ int main() {
 			break;
 		}
 		case 0: exit(1);
-
 
 		}
 	}
