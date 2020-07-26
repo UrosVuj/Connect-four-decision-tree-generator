@@ -300,8 +300,10 @@ public:
 			next = stack.pop();
 			while (next != 0) {
 
-				if (!is_full(next->table) && !is_done(next)) {		//creates new children if the table isnt full
-																	//or the winner hasn't been found
+				//creates new children if the table isnt full
+				//or the winner hasn't been found
+				if (!is_full(next->table) && !is_done(next)) {		
+
 					for (int i = 0; i < 5; i++) {
 						if (!is_col_full(next, i))
 						{
@@ -314,8 +316,8 @@ public:
 								add_new(next->children[i], i);
 
 								// Determines the result of the table
-								//full and no winner -> 0
-								//a winner exists? 1 if the one who played first won
+								// full and no winner -> 0
+								// a winner exists? 1 if the one who played first won
 								//                -1 if the second player won
 								if (is_full(next->children[i]->table)) next->children[i]->result = 0;
 								if (is_done(next->children[i])) next->children[i]->result = is_done_res(next->children[i]);
